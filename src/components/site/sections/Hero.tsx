@@ -1,3 +1,4 @@
+import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import "./board.css";
 
@@ -106,9 +107,32 @@ function Go() {
   );
 }
 
+// Short desktop screens (Windows laptops with browser bars): lay the board out at the
+// height it was designed for and scale it down to fit, instead of switching to the
+// stacked phone layout.
+const DESIGN_H = 800;
+function useFitScale() {
+  const [fit, setFit] = useState<number | null>(null);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      setFit(w > 1200 && h > 600 && h < 821 ? (h - 46) / DESIGN_H : null);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return fit;
+}
+
 export default function HeroSection() {
+  const fit = useFitScale();
   return (
-    <div className="kb">
+    <div
+      className={fit ? "kb kb-fit" : "kb"}
+      style={fit ? ({ "--fit": fit } as React.CSSProperties) : undefined}
+    >
       <main className="board">
         <header className="hdr">
           <div className="mark">

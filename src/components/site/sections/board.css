@@ -490,13 +490,13 @@
   margin-top: auto;
   padding-top: 16px;
 }
-@media (max-width: 1200px), (max-height: 820px) {
+@media (max-width: 1200px), (max-height: 600px) {
   .kb .tool {
     flex-direction: column;
     align-items: stretch;
   }
 }
-@media (max-height: 820px) and (min-width: 1201px) {
+@media (max-height: 600px) and (min-width: 1201px) {
   .kb .cs p {
     display: none;
   }
@@ -766,7 +766,7 @@
   font-size: 13px;
   color: var(--ink-3);
 }
-@media (max-width: 1200px), (max-height: 820px) {
+@media (max-width: 1200px), (max-height: 600px) {
   .kb .board {
     height: auto;
     grid-template-rows: none;
@@ -791,13 +791,13 @@
     grid-template-columns: 90px 1fr;
   }
 }
-@media (max-width: 1200px), (max-height: 820px) {
+@media (max-width: 1200px), (max-height: 600px) {
   .kb .tool {
     flex-direction: column;
     align-items: stretch;
   }
 }
-@media (max-height: 820px) and (min-width: 1201px) {
+@media (max-height: 600px) and (min-width: 1201px) {
   .kb .cs p {
     display: none;
   }
@@ -963,7 +963,7 @@
 .kb .prev .s {
   margin-bottom: 4px;
 }
-@media (min-width: 1201px) and (min-height: 821px) {
+@media (min-width: 1201px) and (min-height: 601px) {
   .kb .board {
     grid-template-rows: auto minmax(0, 1.02fr) minmax(0, 0.98fr) minmax(0, 1.04fr) auto;
   }
@@ -986,7 +986,7 @@
 .kb .pp {
   container-type: inline-size;
 }
-@media (min-width: 1201px) and (min-height: 821px) {
+@media (min-width: 1201px) and (min-height: 601px) {
   .kb .about,
   .kb .pp {
     container-type: size;
@@ -1099,13 +1099,13 @@
   line-height: 1.5;
   letter-spacing: 0;
 }
-@media (min-width: 1201px) and (min-height: 821px) {
+@media (min-width: 1201px) and (min-height: 601px) {
   .kb .board {
     grid-template-columns: minmax(0, 34fr) minmax(0, 12fr) minmax(0, 21fr) minmax(0, 33fr);
   }
 }
 /* copyright line under the board, bottom right of the page */
-@media (min-width: 1201px) and (min-height: 821px) {
+@media (min-width: 1201px) and (min-height: 601px) {
   .kb .board {
     height: calc(100svh - 24px - 22px);
   }
@@ -1154,7 +1154,7 @@
 .kb .tool {
   padding-bottom: 6px;
 }
-@media (min-width: 1201px) and (min-height: 821px) {
+@media (min-width: 1201px) and (min-height: 601px) {
   .kb .tools {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
@@ -1165,7 +1165,7 @@
 .kb .about .body {
   margin-top: 6px;
 }
-@media (min-width: 1201px) and (min-height: 821px) {
+@media (min-width: 1201px) and (min-height: 601px) {
   .kb .board {
     grid-template-rows: auto minmax(0, 1.08fr) minmax(0, 0.96fr) minmax(0, 1.01fr) auto;
   }
@@ -1185,7 +1185,7 @@
   display: grid;
   gap: 0.5em;
 }
-@media (min-width: 1201px) and (min-height: 821px) {
+@media (min-width: 1201px) and (min-height: 601px) {
   .kb .board {
     grid-template-columns: minmax(0, 32fr) minmax(0, 11fr) minmax(0, 25fr) minmax(0, 32fr);
   }
@@ -1341,8 +1341,8 @@
   font-weight: 600;
 }
 /* One-screen board on smaller laptops: let type shrink a little further so no block overflows. */
-@media (min-width: 1201px) and (min-height: 821px) and (max-width: 1439px),
-  (min-width: 1201px) and (min-height: 821px) and (max-height: 899px) {
+@media (min-width: 1201px) and (min-height: 601px) and (max-width: 1439px),
+  (min-width: 1201px) and (min-height: 601px) and (max-height: 899px) {
   .kb .board {
     font-size: clamp(11px, min(0.9vw, 1.42vh), 15px);
   }
@@ -1351,14 +1351,14 @@
     line-height: 1.38;
   }
 }
-@media (min-width: 1201px) and (min-height: 821px) and (max-width: 1439px),
-  (min-width: 1201px) and (min-height: 821px) and (max-height: 899px) {
+@media (min-width: 1201px) and (min-height: 601px) and (max-width: 1439px),
+  (min-width: 1201px) and (min-height: 601px) and (max-height: 899px) {
   .kb .board > .cell {
     padding: clamp(11px, 1vw, 16px);
   }
 }
-@media (min-width: 1201px) and (min-height: 821px) and (max-width: 1439px),
-  (min-width: 1201px) and (min-height: 821px) and (max-height: 899px) {
+@media (min-width: 1201px) and (min-height: 601px) and (max-width: 1439px),
+  (min-width: 1201px) and (min-height: 601px) and (max-height: 899px) {
   .kb .exp .stats > div {
     padding: 6px 10px;
   }
@@ -1370,7 +1370,7 @@
   }
 }
 /* Projects block text scales with the block so it never spills, on any desktop size. */
-@media (min-width: 1201px) and (min-height: 821px) {
+@media (min-width: 1201px) and (min-height: 601px) {
   .kb .pp .pp-more,
   .kb .pp .pp-more p {
     font-size: clamp(11px, min(3.9cqw, 5.9cqh), 14.5px);
@@ -1381,9 +1381,19 @@
   .kb .board {
     height: calc(100vh - 24px);
   }
-  @media (min-width: 1201px) and (min-height: 821px) {
+  @media (min-width: 1201px) and (min-height: 601px) {
     .kb .board {
       height: calc(100vh - 24px - 22px);
     }
   }
+}
+
+/* Short desktop screens: board laid out at its designed height, then scaled to fit (see Hero). */
+.kb.kb-fit .board {
+  height: 800px;
+  width: calc(100% / var(--fit));
+  margin-right: calc(100% - 100% / var(--fit));
+  margin-bottom: calc(800px * (var(--fit) - 1));
+  transform: scale(var(--fit));
+  transform-origin: top left;
 }
