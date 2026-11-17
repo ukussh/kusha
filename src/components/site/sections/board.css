@@ -1397,3 +1397,29 @@
   transform: scale(var(--fit));
   transform-origin: top left;
 }
+
+/* Phones and tablets: toolkit in fewer columns; certification issuer stays on its row. */
+@media (max-width: 900px) {
+  .kb .tools {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .kb .tools {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .kb .certs .cs li {
+    grid-template-columns: 2.2em minmax(0, 1fr) auto !important;
+    align-items: start;
+  }
+  .kb .certs .cs .fig {
+    grid-column: auto;
+    text-align: right;
+  }
+  .kb .certs .cs .fig strong {
+    font-size: 12px;
+  }
+  .kb .certs .cs p {
+    white-space: normal;
+  }
+}
