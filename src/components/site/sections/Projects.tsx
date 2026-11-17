@@ -1,13 +1,9 @@
-import { useMemo, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useReveal } from "@/hooks/use-reveal";
-import Pager from "../Pager";
-
-const PAGE_SIZE = 5;
-
-const openLinkClass =
-  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-foreground/50 text-foreground transition-all hover:bg-foreground hover:text-background md:h-10 md:w-10";
+import { loadCaseStudy } from "@/lib/case-study";
+import { splitArticle } from "@/lib/markdown";
+import { Page } from "../Page";
 
 // Case studies carry a `slug` and open as an in-site page that renders the
 // matching public/case-studies/<slug>.md; everything else is an external link.
@@ -57,99 +53,235 @@ const projects = [
     href: "https://github.com/ukussh/DoScan",
     direction: "left",
   },
+  {
+    id: "006",
+    title: "spotify's premium conversion",
+    category: "Case Study",
+    tag: "Growth Strategy",
+    slug: "spotify-premium-conversion",
+    href: null as string | null,
+    direction: "right",
+  },
 ];
 
-export default function ProjectsSection() {
-  const { ref, isVisible } = useReveal<HTMLElement>(0.3);
-  const [page, setPage] = useState(0);
+// Certifications open their credential in a new tab, listed in the same rows.
+const certifications = [
+  {
+    id: "001",
+    title: "azure ai essentials",
+    category: "09/2025",
+    tag: "Microsoft",
+    slug: null as string | null,
+    href: "https://www.linkedin.com/learning/certificates/228f7d1746b3e931eda0e174d2b9654daa2bcb16927f24bb8860dec2858b9e89?trk=share_certificate" as
+      string | null,
+    direction: "right",
+  },
+  {
+    id: "002",
+    title: "agile project management",
+    category: "09/2025",
+    tag: "Atlassian",
+    slug: null as string | null,
+    href: "https://www.linkedin.com/learning/certificates/08901033ac66506ca9294c70967c465fa4318ba0581b817287a8c254a59b618b?trk=share_certificate" as
+      string | null,
+    direction: "right",
+  },
+  {
+    id: "003",
+    title: "ai fluency: framework & foundations",
+    category: "06/2026",
+    tag: "Anthropic",
+    slug: null as string | null,
+    href: "https://verify.skilljar.com/c/b79b6xwjjwdr" as string | null,
+    direction: "left",
+  },
+  {
+    id: "004",
+    title: "mongodb overview with aws",
+    category: "07/2025",
+    tag: "MongoDB",
+    slug: null as string | null,
+    href: "https://www.credly.com/badges/1522d5da-6969-4705-838c-2f5c5d578dbc/public_url" as
+      string | null,
+    direction: "right",
+  },
+];
 
-  const pageCount = Math.max(1, Math.ceil(projects.length / PAGE_SIZE));
-  const visibleProjects = useMemo(
-    () => projects.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE),
-    [page]
-  );
+type Item = {
+  id: string;
+  title: string;
+  category: string;
+  tag: string;
+  slug: string | null;
+  href: string | null;
+  direction: string;
+};
+// Renumber so each page counts from 001.
+const numbered = (items: Item[]): Item[] =>
+  items.map((p, i) => ({ ...p, id: String(i + 1).padStart(3, "0") }));
+
+export const SIDE_PROJECTS = numbered(projects.filter((p) => !p.slug));
+export const CASE_STUDIES = numbered(projects.filter((p) => p.slug));
+
+// One page layout shared by Projects, Case studies and Certifications.
+// Rows per page; more items spill onto further pages with the pager below.
+const PAGE_SIZE = 6;
+
+function ListPage({
+  title,
+  kicker,
+  lead,
+  items,
+}: {
+  title: string;
+  kicker: string;
+  lead: ReactNode;
+  items: Item[];
+}) {
+  const [page, setPage] = useState(0);
+  const pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const visible = items.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <section ref={ref} className="deck-section">
-      <div className="deck-inner">
-        <div
-          className={`mb-8 transition-all duration-700 md:mb-12 ${
-            isVisible ? "translate-x-0 opacity-100" : "-translate-x-12 opacity-0"
-          }`}
-        >
-          <h2 className="mb-2 font-sans text-3xl font-light lowercase tracking-tight text-foreground sm:text-4xl md:text-6xl lg:text-7xl">
-            things i&apos;ve built &amp; broken
-            <br/>
-           breaking down the product decisions
-          </h2>
-        </div>
-
-        <div>
-          {visibleProjects.map((project, i) => (
-            <ProjectRow key={project.id} project={project} index={i} isVisible={isVisible} />
+    <Page title={title} home="#main" kicker={kicker} lead={lead}>
+      <ol className="pg-rows pg-list">
+        {visible.map((item) => (
+          <li key={item.title}>
+            <ItemRow item={item} />
+          </li>
+        ))}
+      </ol>
+      <nav className="pg-pager" aria-label={`${title} pages`}>
+        <span className="pg-count">
+          {items.length} {title}
+        </span>
+        <div className="pg-pages">
+          <button
+            type="button"
+            onClick={() => setPage((p) => p - 1)}
+            disabled={page === 0}
+            aria-label="Previous page"
+          >
+            ←
+          </button>
+          {Array.from({ length: pages }, (_, i) => (
+            <button
+              type="button"
+              key={i}
+              className={i === page ? "on" : ""}
+              aria-current={i === page ? "page" : undefined}
+              onClick={() => setPage(i)}
+            >
+              {pad(i + 1)}
+            </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={page >= pages - 1}
+            aria-label="Next page"
+          >
+            →
+          </button>
         </div>
-
-        <Pager page={page} pageCount={pageCount} onChange={setPage} />
-      </div>
-    </section>
+      </nav>
+    </Page>
   );
 }
 
-function ProjectRow({
-  project,
-  index,
-  isVisible,
-}: {
-  project: (typeof projects)[number];
-  index: number;
-  isVisible: boolean;
-}) {
-  const revealClass = !isVisible
-    ? project.direction === "left"
-      ? "-translate-x-16 opacity-0"
-      : "translate-x-16 opacity-0"
-    : "translate-x-0 opacity-100";
-
+export default function ProjectsSection() {
   return (
-    <div
-      className={`group flex items-center justify-between gap-4 border-b border-foreground/10 py-4 transition-all duration-700 hover:border-foreground/25 md:py-5 ${revealClass}`}
-      style={{ transitionDelay: `${index * 120}ms` }}
-    >
-      <div className="flex min-w-0 items-center gap-3 md:gap-6">
-        <span className="font-mono text-xs text-foreground/30 transition-colors group-hover:text-primary md:text-sm">
-          {project.id}
-        </span>
-        {project.slug ? (
-          <Link
-            to="/case-studies/$slug"
-            params={{ slug: project.slug }}
-            className={openLinkClass}
-            aria-label={`Read ${project.title}`}
-          >
-            <ArrowUpRight className="h-4 w-4 md:h-5 md:w-5" />
-          </Link>
-        ) : (
-          <a
-            href={project.href ?? "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={openLinkClass}
-            aria-label={`Open ${project.title}`}
-          >
-            <ArrowUpRight className="h-4 w-4 md:h-5 md:w-5" />
-          </a>
-        )}
-        <h3 className="truncate font-sans text-base font-light lowercase text-foreground transition-transform duration-300 group-hover:translate-x-2 md:text-2xl lg:text-3xl">
-          {project.title}
-        </h3>
-      </div>
-      <div className="flex shrink-0 flex-col items-end text-right">
-        <span className="font-mono text-[11px] text-foreground/60 md:text-sm">{project.tag}</span>
-        <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 md:text-xs">
-          {project.category}
-        </span>
-      </div>
-    </div>
+    <ListPage
+      title="projects"
+      kicker="up next: the work, build by build."
+      lead={
+        <>
+          things I’ve built &amp; broken.
+          <br />
+          <span className="pg-sub">side builds, shipped and live.</span>
+        </>
+      }
+      items={SIDE_PROJECTS}
+    />
   );
+}
+
+export function CaseStudiesSection() {
+  return (
+    <ListPage
+      title="case studies"
+      kicker="read on: the thinking, case by case."
+      lead={
+        <>
+          case studies,
+          <br />
+          <span className="pg-sub">breaking down the product decisions.</span>
+        </>
+      }
+      items={CASE_STUDIES}
+    />
+  );
+}
+
+export function CertificationsSection() {
+  return (
+    <ListPage
+      title="certifications"
+      kicker="on record: each one opens its credential."
+      lead={
+        <>
+          learning the craft &amp;
+          <br />
+          <span className="pg-sub">validating the knowledge.</span>
+        </>
+      }
+      items={numbered(certifications)}
+    />
+  );
+}
+
+function ItemRow({ item }: { item: Item }) {
+  const inner = (
+    <>
+      <span className="n">{item.id.slice(-2)}</span>
+      <div>
+        <b>{item.title}</b>
+        {item.slug && <Standfirst slug={item.slug} />}
+      </div>
+      <span className="meta">
+        <span>
+          <strong>{item.tag}</strong>
+          <small>{item.category}</small>
+        </span>
+        <span className="go" aria-hidden="true">
+          ↗
+        </span>
+      </span>
+    </>
+  );
+  return item.slug ? (
+    <Link to="/case-studies/$slug" params={{ slug: item.slug }} preload="intent" className="pg-row">
+      {inner}
+    </Link>
+  ) : (
+    <a href={item.href ?? "#"} target="_blank" rel="noopener noreferrer" className="pg-row">
+      {inner}
+    </a>
+  );
+}
+
+// A case study's own opening line, read from its write-up.
+function Standfirst({ slug }: { slug: string }) {
+  const [text, setText] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    loadCaseStudy(slug).then((src) => {
+      if (live && src) setText(splitArticle(src).standfirst ?? null);
+    });
+    return () => {
+      live = false;
+    };
+  }, [slug]);
+  return text ? <p>{text}</p> : null;
 }

@@ -28,35 +28,52 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-sans: "Geist", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "Outfit", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: "Gowun Batang", Georgia, serif;
+  --font-mono: "Figtree", system-ui, sans-serif;
+  /* Geometric grotesk for headings, mono for body, as in the reference. */
+  --font-display: "Figtree", system-ui, sans-serif;
 }
 
 :root {
-  --portfolio-yellow: #f0e07d;
-  --portfolio-amber: #fba64b;
-  --portfolio-ink: #10131a;
+  /* Palette: mid warm stone sampled from the home photo's wall, neither cream nor dark, with ink text.
+     palette-gray = background, palette-yellow = text (names kept so existing rules still resolve). */
+  --palette-gray: #f0f0f0;
+  --orange: #ff8100;
+  --lilac: #c7c2cb;
+  --sage: #c8cac7;
+  --palette-white: #ffffff;
+  --sun-2: #e6e6e6;
+  --palette-yellow: #0d0d0d;
+  --palette-blue: #2f4ea8;
+  --palette-periwinkle: #8a9fd8;
+  --portfolio-ice: var(--palette-yellow);
+
+  /* Motion tokens: one slide curve for the deck, one settle curve for content. */
+  /* Moves off immediately, then settles: quick and decisive, no slow wind-up. */
+  --ease-deck: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-deck: 560ms;
 
   --radius: 0.75rem;
-  --background: #0c0f14;
-  --foreground: #f2efe6;
-  --card: #131820;
-  --card-foreground: #f2efe6;
-  --popover: #131820;
-  --popover-foreground: #f2efe6;
-  --primary: var(--portfolio-yellow);
-  --primary-foreground: #10131a;
-  --secondary: #1a2029;
-  --secondary-foreground: #f2efe6;
-  --muted: #1a2029;
-  --muted-foreground: rgba(242, 239, 230, 0.6);
-  --accent: var(--portfolio-yellow);
-  --accent-foreground: #10131a;
+  --background: var(--palette-gray);
+  --foreground: var(--palette-yellow);
+  --card: var(--palette-gray);
+  --card-foreground: var(--palette-yellow);
+  --popover: var(--palette-gray);
+  --popover-foreground: var(--palette-yellow);
+  --primary: var(--palette-yellow);
+  --primary-foreground: var(--palette-gray);
+  --secondary: var(--palette-yellow);
+  --secondary-foreground: var(--palette-yellow);
+  --muted: #e6e6e6;
+  --muted-foreground: rgba(13, 13, 13, 0.68);
+  --accent: var(--palette-yellow);
+  --accent-foreground: var(--palette-gray);
   --destructive: #dc2626;
   --destructive-foreground: #fafafa;
-  --border: rgba(242, 239, 230, 0.12);
-  --input: rgba(242, 239, 230, 0.08);
-  --ring: var(--portfolio-yellow);
+  --border: rgba(13, 13, 13, 0.16);
+  --input: rgba(13, 13, 13, 0.08);
+  --ring: var(--palette-yellow);
 }
 
 @layer base {
@@ -96,8 +113,13 @@
 .deck-track {
   display: flex;
   height: 100%;
-  transition: transform 900ms cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform var(--dur-deck) var(--ease-deck);
   will-change: transform;
+}
+
+/* Restoring a panel from the URL jumps straight there. */
+.deck-instant .deck-track {
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -121,72 +143,11 @@
   display: none;
 }
 
-.deck-section {
-  display: flex;
-  min-height: 100%;
-  flex-direction: column;
-  /* No justify-content here: this rule is unlayered and would beat Tailwind's
-     justify-* utilities (the hero's justify-end, contact's justify-between).
-     Sections anchor their headings by simply not setting a justify utility,
-     which leaves the default flex-start — so a heading never moves when the
-     content under it grows or shrinks (accordion toggles, pagination). */
-  /* Min must clear the fixed header, which wraps to two rows on narrow screens. */
-  padding-top: clamp(96px, 12vh, 120px);
-  padding-bottom: clamp(64px, 10vh, 104px);
-}
-
-.deck-inner {
-  width: 100%;
-  /* No max-width: content fills the window instead of being capped at a fixed
-     1400px column with dead space either side on large displays. Line length
-     stays readable because the prose blocks carry their own max-w-* utilities. */
-  margin: 0 auto;
-  /* Gutters scale with the viewport and never collapse on small screens. */
-  padding-left: clamp(20px, 5vw, 72px);
-  padding-right: clamp(20px, 5vw, 72px);
-}
-
-/* ── Home banner ──
-   Shown at full strength on the home panel and faded out entirely on the
-   others; opacity is driven per-panel from JS. */
-.portrait-backdrop {
-  background-image: url("/assets/poster.png");
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: cover;
-  transition: opacity 900ms cubic-bezier(0.76, 0, 0.24, 1);
-}
-
-/* Portrait is 16:9 and mostly empty at the sides; on narrow screens frame the
-   subject instead of letting `cover` crop it away. */
-@media (max-width: 767px) {
-  .portrait-backdrop {
-    background-size: auto 78%;
-    background-position: center 82%;
+@keyframes portrait-in {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .portrait-backdrop {
-    transition-duration: 200ms;
-  }
-}
-
-/* ── Contact ticker ── */
-/* Fade only the outer edges, so several words stay legible at once. */
-.ticker-mask {
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    black 10%,
-    black 90%,
-    transparent
-  );
-  mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
-}
-
-.ticker-track {
-  animation: ticker-scroll 28s linear infinite;
 }
 
 @keyframes ticker-scroll {
@@ -198,8 +159,241 @@
   }
 }
 
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+}
+
+@keyframes line-up {
+  from {
+    transform: translate3d(0, 110%, 0);
+  }
+}
+
+.intro-fade {
+  animation: intro-fade 1000ms var(--ease-out) backwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+}
+
+/* ── Route changes (View Transitions) ── */
+::view-transition-old(root) {
+  animation: 350ms var(--ease-out) both vt-fade-out;
+}
+
+::view-transition-new(root) {
+  animation: 700ms var(--ease-out) 100ms both vt-rise-in;
+}
+
+::view-transition-group(case-title) {
+  animation-duration: 800ms;
+  animation-timing-function: var(--ease-out);
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+}
+
+.case-article > header h1 {
+  view-transition-name: case-title;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .ticker-track {
+  .intro-fade {
     animation: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ── Editorial accents ── */
+/* Gowun Batang has no italic, so accents stay upright rather than faux-slanted. */
+.accent {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+/* Studio type: tight semibold grotesk headings, mono body, uppercase mono labels. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display) !important;
+  /* Heading weight: 400 regular · 500 medium · 600 semibold · 700 bold · 800 extra bold. */
+  font-weight: 600 !important;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+  text-transform: none;
+}
+/* Row titles (projects, certifications, competence): bold but a touch looser, as in the reference list items. */
+h3 {
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+/* Body copy: the reference's ink-2 serif, slightly larger. */
+body {
+  color: var(--foreground);
+}
+p {
+  color: inherit;
+}
+body {
+  font-size: 0.875rem;
+}
+/* Labels: the reference's small semibold Figtree in solid ink, not a faded mono. */
+.font-mono {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.marker {
+  background: linear-gradient(transparent 55%, rgba(255, 219, 0, 0.35) 55%);
+  padding: 0 0.15em;
+}
+
+.tile {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1.25rem 1.25rem 1.4rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 219, 0, 0.16);
+  transition:
+    border-color 400ms var(--ease-out),
+    background-color 400ms var(--ease-out),
+    translate 400ms var(--ease-out);
+}
+.tile:hover {
+  border-color: rgba(255, 219, 0, 0.5);
+  background: rgba(255, 219, 0, 0.06);
+  translate: 0 -3px;
+}
+
+/* Short desktop screens (1280×720, 1366×768, scaled Windows laptops): everything is sized in rem,
+   so shrinking the root size with the viewport height keeps each panel on one screen, the way
+   it looks on a 1080p screen. Phones and taller screens keep the normal 16px. */
+/* Base type is 1.25x the browser default (20px instead of 16px); every rem-sized element scales with it. */
+html {
+  font-size: 125%;
+}
+@media (min-width: 768px) and (max-height: 940px) {
+  html {
+    font-size: clamp(13.75px, 2.11vh, 20px);
+  }
+}
+@keyframes pointer-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.92);
+  }
+}
+@keyframes pointer-line-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes pointer-dot-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+@keyframes hud-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes hud-level {
+  0% {
+    clip-path: inset(55% 0 0 0);
+  }
+  35% {
+    clip-path: inset(20% 0 0 0);
+  }
+  70% {
+    clip-path: inset(40% 0 0 0);
+  }
+  100% {
+    clip-path: inset(8% 0 0 0);
+  }
+}
+@keyframes hud-focus-in {
+  from {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+@keyframes hud-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes hero-underline {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── Deck: cross-fade between pages instead of sliding across every panel ── */
+.deck-track {
+  position: relative;
+  display: block;
+  width: 100%;
+  transform: none;
+  transition: none;
+}
+.deck-panel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px) scale(0.992);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 520ms var(--ease-out),
+    visibility 0s linear 420ms;
+  will-change: opacity, transform;
+}
+.deck-panel[data-state="active"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  z-index: 1;
+  transition:
+    opacity 420ms var(--ease-out) 60ms,
+    transform 520ms var(--ease-out) 60ms,
+    visibility 0s;
+}
+.deck-instant .deck-panel {
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck-panel,
+  .deck-panel[data-state="active"] {
+    transform: none;
+    transition:
+      opacity 200ms linear,
+      visibility 0s;
   }
 }

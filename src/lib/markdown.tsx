@@ -28,18 +28,18 @@ function renderInline(text: string, prefix: string): ReactNode[] {
 
     if (token.startsWith("**")) {
       out.push(
-        <strong key={key} className="font-medium text-foreground">
+        <strong key={key} className="font-bold text-foreground">
           {token.slice(2, -2)}
-        </strong>
+        </strong>,
       );
     } else if (token.startsWith("`")) {
       out.push(
         <code
           key={key}
-          className="rounded bg-foreground/10 px-1.5 py-0.5 font-mono text-[0.85em] text-foreground"
+          className="rounded bg-foreground/10 px-1.5 py-0.5 font-sans text-[0.85em] text-foreground"
         >
           {token.slice(1, -1)}
-        </code>
+        </code>,
       );
     } else if (token.startsWith("[")) {
       const link = /^\[([^\]]+)\]\(([^)\s]+)\)$/.exec(token);
@@ -50,19 +50,19 @@ function renderInline(text: string, prefix: string): ReactNode[] {
             href={link[2]}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary underline underline-offset-4 transition-colors hover:text-foreground"
+            className="underline decoration-foreground/35 decoration-1 underline-offset-4 transition-colors hover:decoration-foreground"
           >
             {link[1]}
-          </a>
+          </a>,
         );
       } else {
         out.push(token);
       }
     } else {
       out.push(
-        <em key={key} className="italic">
+        <em key={key} className="not-italic text-foreground">
           {token.slice(1, -1)}
-        </em>
+        </em>,
       );
     }
     last = at + token.length;
@@ -73,12 +73,12 @@ function renderInline(text: string, prefix: string): ReactNode[] {
 }
 
 const HEADING_CLASS: Record<number, string> = {
-  1: "mt-14 mb-5 font-sans text-3xl font-light tracking-tight text-foreground first:mt-0 md:text-5xl",
-  2: "mt-12 mb-4 font-sans text-2xl font-light tracking-tight text-foreground first:mt-0 md:text-4xl",
-  3: "mt-10 mb-3 font-sans text-xl font-light tracking-tight text-foreground first:mt-0 md:text-2xl",
-  4: "mt-8 mb-3 font-sans text-lg font-light tracking-tight text-foreground first:mt-0 md:text-xl",
-  5: "mt-6 mb-2 font-sans text-base font-medium text-foreground first:mt-0",
-  6: "mt-6 mb-2 font-mono text-xs uppercase tracking-[0.18em] text-foreground/60 first:mt-0",
+  1: "t-h3 mt-16 mb-5 first:mt-0 md:mt-20",
+  2: "t-h4 mt-12 mb-4 text-[1.375rem] first:mt-0",
+  3: "t-h4 mt-10 mb-3 text-[1.1875rem] first:mt-0",
+  4: "t-h4 mt-8 mb-3 first:mt-0",
+  5: "t-h4 mt-6 mb-2 text-base first:mt-0",
+  6: "t-label mt-6 mb-2 text-muted-foreground first:mt-0",
 };
 
 const isBlank = (s: string) => !s.trim();
@@ -96,10 +96,10 @@ const cells = (row: string) =>
     .replace(/^\|/, "")
     .replace(/\|$/, "")
     .split("|")
-    .map(c => c.trim());
+    .map((c) => c.trim());
 
 function alignments(divider: string): Align[] {
-  return cells(divider).map(c => {
+  return cells(divider).map((c) => {
     const left = c.startsWith(":");
     const right = c.endsWith(":");
     if (left && right) return "center";
@@ -131,7 +131,7 @@ export function renderMarkdown(source: string): ReactNode[] {
 
     // Horizontal rule — checked before lists so `---` isn't read as a bullet.
     if (isRule(line)) {
-      out.push(<hr key={nextKey()} className="my-10 border-t border-foreground/15" />);
+      out.push(<hr key={nextKey()} className="my-14 border-t" />);
       i++;
       continue;
     }
@@ -143,7 +143,7 @@ export function renderMarkdown(source: string): ReactNode[] {
       out.push(
         <Tag key={nextKey()} className={HEADING_CLASS[level]}>
           {renderInline(heading[2], nextKey())}
-        </Tag>
+        </Tag>,
       );
       i++;
       continue;
@@ -161,14 +161,14 @@ export function renderMarkdown(source: string): ReactNode[] {
       }
       out.push(
         // Wide tables scroll inside their own box rather than the page.
-        <div key={nextKey()} className="my-8 -mx-1 overflow-x-auto">
-          <table className="w-full min-w-[32rem] border-collapse text-sm">
+        <div key={nextKey()} className="my-10 overflow-x-auto">
+          <table className="w-full min-w-[32rem] border-collapse font-sans text-[0.875rem]">
             <thead>
               <tr className="border-b border-foreground/25">
                 {header.map((c, n) => (
                   <th
                     key={n}
-                    className={`px-3 py-3 font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-foreground/60 ${
+                    className={`t-label px-3 py-3 text-muted-foreground first:pl-0 ${
                       alignClass[align[n] ?? "left"]
                     }`}
                   >
@@ -183,7 +183,7 @@ export function renderMarkdown(source: string): ReactNode[] {
                   {row.map((c, n) => (
                     <td
                       key={n}
-                      className={`px-3 py-3 text-foreground/85 ${alignClass[align[n] ?? "left"]}`}
+                      className={`px-3 py-3 align-top text-foreground/85 first:pl-0 ${alignClass[align[n] ?? "left"]}`}
                     >
                       {renderInline(c, `td${r}-${n}`)}
                     </td>
@@ -192,7 +192,7 @@ export function renderMarkdown(source: string): ReactNode[] {
               ))}
             </tbody>
           </table>
-        </div>
+        </div>,
       );
       continue;
     }
@@ -206,10 +206,10 @@ export function renderMarkdown(source: string): ReactNode[] {
       out.push(
         <blockquote
           key={nextKey()}
-          className="my-8 border-l-2 border-primary/70 pl-5 text-foreground/75 italic md:pl-6"
+          className="my-10 border-l-2 border-foreground pl-5 font-serif text-[1.1875rem] leading-[1.6] text-foreground md:pl-7"
         >
           {renderInline(buf.join(" ").trim(), nextKey())}
-        </blockquote>
+        </blockquote>,
       );
       continue;
     }
@@ -221,14 +221,14 @@ export function renderMarkdown(source: string): ReactNode[] {
         i++;
       }
       out.push(
-        <ul key={nextKey()} className="my-6 space-y-2.5 pl-1">
+        <ul key={nextKey()} className="t-copy my-6 space-y-3">
           {items.map((item, n) => (
             <li key={n} className="flex gap-3 text-foreground/85">
-              <span aria-hidden className="mt-[0.7em] h-px w-3 shrink-0 bg-primary/80" />
+              <span aria-hidden className="mt-[0.85em] h-px w-3 shrink-0 bg-foreground/60" />
               <span className="min-w-0 flex-1">{renderInline(item, `li${n}`)}</span>
             </li>
           ))}
-        </ul>
+        </ul>,
       );
       continue;
     }
@@ -248,9 +248,9 @@ export function renderMarkdown(source: string): ReactNode[] {
       i++;
     }
     out.push(
-      <p key={nextKey()} className="my-5 leading-relaxed text-foreground/85">
+      <p key={nextKey()} className="t-copy my-5 text-foreground/85">
         {renderInline(buf.join(" "), nextKey())}
-      </p>
+      </p>,
     );
   }
 
@@ -261,4 +261,40 @@ export function renderMarkdown(source: string): ReactNode[] {
 export function extractTitle(source: string): string | null {
   const m = /^#\s+(.+)$/m.exec(source.replace(/\r\n/g, "\n"));
   return m ? m[1].trim() : null;
+}
+
+/**
+ * Splits a write-up into an article opening: the `# ` title, a standfirst
+ * (a `## ` subtitle or the opening paragraph directly under the title), and
+ * the remaining body markdown.
+ */
+export function splitArticle(source: string): {
+  title: string | null;
+  standfirst: string | null;
+  body: string;
+} {
+  const lines = source.replace(/\r\n/g, "\n").split("\n");
+  let i = 0;
+  const skipBlank = () => {
+    while (i < lines.length && isBlank(lines[i])) i++;
+  };
+
+  skipBlank();
+  const titleMatch = /^#\s+(.+)$/.exec(lines[i] ?? "");
+  if (!titleMatch) return { title: null, standfirst: null, body: source };
+  i++;
+  skipBlank();
+
+  let standfirst: string | null = null;
+  const sub = /^##\s+(.+)$/.exec(lines[i] ?? "");
+  if (sub) {
+    standfirst = sub[1].trim();
+    i++;
+  } else if (lines[i] && !isHeading(lines[i]) && !/^[>\-*|`]|^\d+\./.test(lines[i])) {
+    const para: string[] = [];
+    while (i < lines.length && !isBlank(lines[i])) para.push(lines[i++].trim());
+    standfirst = para.join(" ");
+  }
+
+  return { title: titleMatch[1].trim(), standfirst, body: lines.slice(i).join("\n") };
 }

@@ -1,98 +1,82 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft } from "lucide-react";
-import GrainOverlay from "@/components/site/GrainOverlay";
-import { renderMarkdown, extractTitle } from "@/lib/markdown";
+import { Page } from "@/components/site/Page";
+import { renderMarkdown, extractTitle, splitArticle } from "@/lib/markdown";
+import { CASE_STUDY_TAGS, loadCaseStudy, readingMinutes } from "@/lib/case-study";
 
 export const Route = createFileRoute("/case-studies/$slug")({
+  // Client navigations load the write-up before the route commits, so the page
+  // arrives complete and the title can morph in. The server render has no
+  // origin to fetch from and leaves it to the component.
+  loader: async ({ params }) =>
+    typeof window === "undefined" ? null : { source: await loadCaseStudy(params.slug) },
   component: CaseStudyPage,
 });
 
-type State =
-  | { status: "loading" }
-  | { status: "ready"; source: string }
-  | { status: "missing" };
+type State = { status: "loading" } | { status: "ready"; source: string } | { status: "missing" };
 
 function CaseStudyPage() {
   const { slug } = Route.useParams();
-  const [state, setState] = useState<State>({ status: "loading" });
+  const preloaded = Route.useLoaderData();
+  const [fetched, setFetched] = useState<{ slug: string; source: string | null } | null>(null);
 
   useEffect(() => {
+    if (preloaded) return;
     let cancelled = false;
-    setState({ status: "loading" });
-
-    fetch(`/case-studies/${slug}.md`)
-      .then(res => (res.ok ? res.text() : Promise.reject(new Error(String(res.status)))))
-      .then(text => {
-        // A missing file can be served as the SPA shell, so reject HTML too.
-        if (cancelled) return;
-        if (/^\s*<!doctype html/i.test(text)) setState({ status: "missing" });
-        else setState({ status: "ready", source: text });
-      })
-      .catch(() => {
-        if (!cancelled) setState({ status: "missing" });
-      });
-
+    loadCaseStudy(slug).then((source) => {
+      if (!cancelled) setFetched({ slug, source });
+    });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, preloaded]);
+
+  const result = preloaded ?? (fetched?.slug === slug ? fetched : null);
+  const state: State = !result
+    ? { status: "loading" }
+    : result.source
+      ? { status: "ready", source: result.source }
+      : { status: "missing" };
 
   const source = state.status === "ready" ? state.source : "";
   const title = useMemo(() => extractTitle(source), [source]);
-  const body = useMemo(() => (source ? renderMarkdown(source) : null), [source]);
+  const article = useMemo(() => (source ? splitArticle(source) : null), [source]);
+  const body = useMemo(() => (article ? renderMarkdown(article.body) : null), [article]);
 
   useEffect(() => {
     if (title) document.title = title;
   }, [title]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <GrainOverlay />
+    <Page title="case study" home="/#case-studies" homeLabel="case studies">
+      <article className="case-article pg-article">
+        {state.status === "loading" && <p>loading…</p>}
 
-      <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/85 backdrop-blur-md">
-        <div className="deck-inner flex items-center justify-between py-4">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 font-mono text-xs lowercase text-foreground/70 transition-colors hover:text-foreground md:text-sm"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            back
-          </Link>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/45">
-            Case Study
-          </span>
-        </div>
-      </header>
+        {state.status === "missing" && (
+          <div>
+            <h1>case study not found</h1>
+            <p>No write-up exists at this address.</p>
+            <p>
+              <Link to="/">← back to the portfolio</Link>
+            </p>
+          </div>
+        )}
 
-      <main className="deck-inner pb-24 pt-10 md:pt-16">
-        {/* Same reading measure as the rest of the site's prose. */}
-        <article className="mx-auto w-full max-w-3xl">
-          {state.status === "loading" && (
-            <p className="font-mono text-sm text-foreground/50">loading…</p>
-          )}
-
-          {state.status === "missing" && (
-            <div>
-              <h1 className="mb-4 font-sans text-3xl font-light lowercase tracking-tight text-foreground md:text-5xl">
-                case study not found
-              </h1>
-              <p className="mb-8 text-foreground/70">
-                No write-up exists at this address.
+        {state.status === "ready" && article && (
+          <>
+            <header className="pg-art-head">
+              <p className="pg-kicker">
+                Case study
+                {CASE_STUDY_TAGS[slug] && <> · {CASE_STUDY_TAGS[slug]}</>} ·{" "}
+                {readingMinutes(source)} min read
               </p>
-              <Link
-                to="/"
-                className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-5 py-2.5 font-mono text-xs lowercase text-foreground transition-colors hover:bg-foreground hover:text-background"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                back to portfolio
-              </Link>
-            </div>
-          )}
-
-          {state.status === "ready" && body}
-        </article>
-      </main>
-    </div>
+              {article.title && <h1 className="pg-art-title">{article.title}</h1>}
+              {article.standfirst && <p className="pg-art-stand">{article.standfirst}</p>}
+            </header>
+            {body}
+          </>
+        )}
+      </article>
+    </Page>
   );
 }

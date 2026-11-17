@@ -1,0 +1,612 @@
+/* Pages opened from the home board. Reuses the board's tokens (.kb) and header (.hdr). */
+.kb.kp {
+  min-height: 100svh;
+  padding: 12px;
+}
+.kb .pboard {
+  border: 1.5px solid var(--frame);
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--bg);
+  min-height: calc(100svh - 24px);
+  display: flex;
+  flex-direction: column;
+}
+.kb .pboard .hdr {
+  display: grid;
+  grid-template-columns: clamp(64px, 8vw, 120px) 1fr;
+}
+.kb .pboard .hdr .title {
+  flex-wrap: nowrap;
+}
+.kb .pboard .hdr h1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.kb .pg-home {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--tint);
+  border-radius: 99px;
+  padding: 7px 14px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+.kb .pg-home:hover {
+  background: var(--ink);
+  color: #fff;
+}
+.kb .pg-home span {
+  transition: transform 0.4s var(--ease);
+}
+.kb .pg-home:hover span {
+  transform: translateX(-3px);
+}
+
+.kb .pg-intro {
+  padding: clamp(18px, 3vw, 40px) var(--pad) clamp(14px, 2vw, 24px);
+  border-bottom: 1px solid var(--line);
+  background: var(--tint);
+}
+.kb .pg-kicker {
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.kb .pg-lead {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.2vw, 34px);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  max-width: 30ch;
+}
+.kb .pg-lead em {
+  font-style: normal;
+  color: var(--accent);
+}
+.kb .pg-body {
+  flex: 1;
+}
+
+/* Ruled rows */
+.kb .pg-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.kb .pg-rows > li {
+  border-bottom: 1px solid var(--line);
+}
+.kb .pg-row {
+  display: grid;
+  grid-template-columns: 3.2em minmax(0, 1fr) auto;
+  gap: clamp(12px, 2vw, 28px);
+  align-items: center;
+  padding: clamp(14px, 2vh, 22px) var(--pad);
+  transition:
+    background 0.3s,
+    padding 0.35s var(--ease);
+}
+.kb a.pg-row:hover {
+  background: var(--tint);
+  padding-left: calc(var(--pad) + 6px);
+}
+.kb .pg-row .n {
+  font-weight: 300;
+  font-size: clamp(26px, 2.4vw, 40px);
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--ink-3);
+}
+.kb .pg-row b {
+  display: block;
+  font-weight: 600;
+  font-size: clamp(17px, 1.6vw, 24px);
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  text-transform: lowercase;
+}
+.kb .pg-row p {
+  margin-top: 4px;
+  color: var(--ink-2);
+  max-width: 70ch;
+}
+.kb .pg-row .meta {
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  white-space: nowrap;
+}
+.kb .pg-row .meta small {
+  display: block;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+.kb .pg-row .meta strong {
+  display: block;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.kb .pg-row .go {
+  font-size: 18px;
+  vertical-align: baseline;
+  margin: 0;
+  color: var(--accent);
+}
+.kb a.pg-row:hover .go {
+  transform: translate(2px, -2px);
+}
+
+/* Case study article */
+.kb .pg-article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 56px) var(--pad) 80px;
+  color: var(--ink-2);
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.65;
+}
+.kb .pg-article h2,
+.kb .pg-article h3,
+.kb .pg-article h4 {
+  font-family: var(--sans) !important;
+  font-weight: 600 !important;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  text-transform: none;
+}
+.kb .pg-article h1 {
+  font-family: var(--sans) !important;
+  font-weight: 600 !important;
+  text-transform: none;
+  color: var(--ink);
+  font-size: clamp(24px, 2.4vw, 34px);
+  letter-spacing: -0.04em;
+  margin: 2em 0 0.6em;
+}
+.kb .pg-article h2 {
+  font-size: clamp(22px, 2vw, 30px);
+  margin: 2em 0 0.6em;
+}
+.kb .pg-article h3 {
+  font-size: clamp(18px, 1.5vw, 22px);
+  margin: 1.6em 0 0.5em;
+}
+.kb .pg-article p,
+.kb .pg-article li {
+  color: var(--ink-2);
+}
+.kb .pg-article strong {
+  color: var(--ink);
+}
+.kb .pg-article blockquote {
+  border-left: 3px solid var(--accent);
+  background: var(--tint);
+  border-radius: 0 12px 12px 0;
+  padding: 12px 16px;
+  margin: 1.4em 0;
+  font-family: var(--serif);
+}
+.kb .pg-article hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 2.4em 0;
+}
+.kb .pg-article table {
+  font-size: 0.92em;
+}
+.kb .pg-article th {
+  color: var(--ink);
+  font-weight: 600;
+}
+.kb .pg-article a {
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .kb .pg-row {
+    grid-template-columns: 2.4em minmax(0, 1fr);
+  }
+  .kb .pg-row .meta {
+    grid-column: 2;
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .kb .pboard .hdr {
+    grid-template-columns: 56px 1fr;
+  }
+  .kb .pboard .hdr h1 {
+    font-size: clamp(20px, 6vw, 30px);
+  }
+}
+.kb .pg-art-head {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 28px;
+  margin-bottom: 28px;
+}
+.kb .pg-article h1.pg-art-title {
+  margin: 0;
+  font-size: clamp(30px, 3.6vw, 54px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+.kb .pg-art-stand {
+  margin-top: 18px;
+  font-family: var(--serif);
+  font-size: clamp(18px, 1.6vw, 24px);
+  line-height: 1.4;
+  color: var(--ink);
+}
+/* board.css zeroes p margins; restore article rhythm */
+.kb .pg-article p {
+  margin: 0 0 1.1em;
+}
+.kb .pg-article .pg-art-head p {
+  margin-bottom: 0;
+}
+.kb .pg-article .pg-art-head .pg-kicker {
+  margin-bottom: 10px;
+}
+.kb .pg-article ul {
+  margin: 0 0 1.2em;
+  padding: 0;
+}
+.kb .pg-article ul li + li {
+  margin-top: 0.55em;
+}
+.kb .pg-article .t-copy {
+  font-size: inherit;
+  line-height: 1.65;
+}
+/* rows share the page height so every page reads full, not top-heavy */
+.kb .pg-body {
+  display: flex;
+  flex-direction: column;
+}
+.kb .pg-body > .pg-rows {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.kb .pg-rows > li {
+  flex: 1;
+  display: flex;
+}
+.kb .pg-rows > li > .pg-row {
+  flex: 1;
+}
+.kb .pg-row p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.kb .pboard .hdr h1 {
+  text-transform: lowercase;
+}
+/* only link rows (case studies) clamp their summary; competence shows its full text */
+.kb div.pg-row p {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+/* short lists (projects, certifications): titles carry the row */
+.kb .pg-row:not(:has(p)) b {
+  font-size: clamp(24px, 2.8vw, 44px);
+  letter-spacing: -0.055em;
+}
+.kb .pg-row:not(:has(p)) .n {
+  font-size: clamp(32px, 3.2vw, 52px);
+}
+.kb .pg-row .meta strong {
+  font-size: clamp(14px, 1.1vw, 18px);
+}
+.kb .pg-row .meta small {
+  font-size: clamp(12px, 0.9vw, 14px);
+}
+.kb .pg-row .go {
+  font-size: clamp(18px, 1.6vw, 26px);
+}
+.kb .pg-intro {
+  padding: clamp(14px, 2.2vw, 30px) var(--pad) clamp(12px, 1.6vw, 20px);
+}
+.kb div.pg-row {
+  padding-block: clamp(8px, 1.2vh, 16px);
+}
+/* List pages (projects, case studies, certifications): natural-height rows that page as the list grows */
+.kb .pg-body > .pg-rows.pg-list {
+  flex: 1;
+  display: block;
+}
+.kb .pg-list > li {
+  display: block;
+}
+.kb .pg-list .pg-row {
+  padding-block: clamp(14px, 2vh, 22px);
+}
+.kb .pg-list .pg-row b {
+  font-size: clamp(18px, 1.7vw, 26px) !important;
+  letter-spacing: -0.045em;
+}
+.kb .pg-list .pg-row .n {
+  font-size: clamp(26px, 2.4vw, 40px) !important;
+}
+.kb .pg-pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px var(--pad);
+  border-top: 1px solid var(--line);
+}
+.kb .pg-count {
+  color: var(--ink-3);
+  font-size: 13px;
+  font-weight: 500;
+}
+.kb .pg-pages {
+  display: flex;
+  gap: 6px;
+}
+.kb .pg-pages button {
+  min-width: 38px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 99px;
+  background: var(--tint);
+  font-weight: 600;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+.kb .pg-pages button:hover:not(:disabled) {
+  background: var(--ink);
+  color: #fff;
+}
+.kb .pg-pages button.on {
+  background: var(--ink);
+  color: #fff;
+}
+.kb .pg-pages button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+/* about: split, reference formatting */
+.kb .ab-s {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 96px);
+  padding: clamp(24px, 3.6vh, 44px) var(--pad);
+}
+.kb .ab-s-left p {
+  font-size: clamp(15px, 1.2vw, 19px);
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 40ch;
+}
+.kb .ab-s-left p + p {
+  margin-top: 1.4em;
+}
+.kb .ab-s-left b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.kb .ab-s-left em {
+  font-style: normal;
+  color: var(--accent);
+}
+.kb .ab-s-left p.ab-s-who {
+  max-width: none;
+  color: var(--ink);
+}
+.kb .ab-s-right > div {
+  padding-block: clamp(14px, 2.2vh, 24px);
+  border-top: 1px solid var(--line);
+}
+.kb .ab-s-right > div:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.kb .ab-s-right h3 {
+  font-family: var(--sans) !important;
+  font-weight: 500 !important;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.kb .ab-s-right p {
+  font-size: clamp(14px, 1.05vw, 16.5px);
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.kb .ab-s-right p + p {
+  margin-top: 0.6em;
+}
+@media (max-width: 900px) {
+  .kb .ab-s {
+    grid-template-columns: 1fr;
+  }
+}
+.kb .ab-s-left p {
+  max-width: none;
+}
+.kb .ab-s-left p + p {
+  margin-top: 1.1em;
+}
+.kb .ab-s-right p {
+  font-size: clamp(14.5px, 1.12vw, 18px);
+}
+.kb .ab-s-right > div {
+  padding-block: clamp(16px, 2.6vh, 28px);
+}
+.kb .ab-s-left p.ab-s-who {
+  font-size: clamp(18px, 1.55vw, 25px);
+  line-height: 1.5;
+}
+.kb .ab-s-who b {
+  font-weight: 700;
+}
+.kb .ab-s-right > div {
+  padding-block: clamp(8px, 1.3vh, 14px);
+}
+.kb .ab-s-right > div:first-child {
+  padding-top: 0;
+}
+.kb .ab-s-right h3 {
+  margin-bottom: 6px;
+}
+.kb .ab-s-right p {
+  line-height: 1.6;
+}
+.kb .ab-s-right p + p {
+  margin-top: 0.4em;
+}
+.kb .ab-s-left p.ab-s-who {
+  font-size: inherit;
+  line-height: inherit;
+}
+.kb .ab-s-left p.ab-s-who {
+  font-size: clamp(15px, 1.2vw, 19px);
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.kb .ab-s-who b {
+  font-weight: 600;
+}
+.kb .ab-s-who em {
+  font-weight: 600;
+}
+.kb .ab-s-right b {
+  color: var(--ink);
+  font-weight: 600;
+}
+/* competence: title and description side by side, full width */
+@media (min-width: 901px) {
+  .kb div.pg-row {
+    grid-template-columns: 3.2em minmax(0, 3fr) minmax(0, 7fr);
+  }
+  .kb div.pg-row > div {
+    display: contents;
+  }
+  .kb div.pg-row > span:empty {
+    display: none;
+  }
+  .kb div.pg-row p {
+    max-width: none;
+    margin-top: 0;
+    font-size: clamp(14.5px, 1.12vw, 18px);
+    line-height: 1.6;
+  }
+}
+@media (min-width: 901px) {
+  .kb div.pg-row b {
+    text-align: center;
+  }
+}
+/* page titles: room for descenders (p, j, y) when the line is tight */
+.kb.kp .hdr h1 {
+  line-height: 1.15;
+  padding-bottom: 0.04em;
+}
+/* Older browsers without small-viewport units fall back to vh. */
+@supports not (height: 100svh) {
+  .kb,
+  .kb.kp {
+    min-height: 100vh;
+  }
+  .kb .pboard {
+    min-height: calc(100vh - 24px);
+  }
+}
+/* Articles never widen the page on phones; wide tables scroll sideways inside themselves. */
+.kb .pg-body > * {
+  min-width: 0;
+}
+.kb .pg-article {
+  width: 100%;
+  overflow-wrap: break-word;
+}
+.kb .pg-article table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.kb .pg-article img,
+.kb .pg-article pre {
+  max-width: 100%;
+}
+.kb .pg-article pre {
+  overflow-x: auto;
+}
+/* case studies list: show the full standfirst across the row, never cut mid-sentence */
+.kb a.pg-row p {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  max-width: none;
+  margin-top: 6px;
+  font-size: clamp(14px, 1.05vw, 16.5px);
+  line-height: 1.55;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.kb a.pg-row:has(p) {
+  align-items: start;
+}
+.kb a.pg-row:has(p) .n,
+.kb a.pg-row:has(p) .meta {
+  margin-top: 2px;
+}
+
+/* competence: serif titles, left-aligned and top-aligned in their column */
+.kb div.pg-row {
+  align-items: start;
+}
+.kb div.pg-row b {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  text-transform: lowercase;
+}
+@media (min-width: 901px) {
+  .kb div.pg-row b {
+    text-align: left;
+  }
+}
+@media (min-width: 901px) {
+  .kb div.pg-row b {
+    padding-left: clamp(20px, 3.5vw, 64px);
+  }
+}
+
+/* page leads: statement in ink, follow-up line in soft grey */
+.kb .pg-lead {
+  max-width: none;
+  letter-spacing: -0.01em;
+  line-height: 1.22;
+}
+.kb .pg-lead .pg-sub {
+  color: var(--ink-3);
+}
+.kb div.pg-row b {
+  font-weight: 700;
+}

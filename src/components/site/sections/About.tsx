@@ -1,78 +1,78 @@
-import { useReveal } from "@/hooks/use-reveal";
+import { Page } from "../Page";
 
 const traits = [
   {
     label: "builder",
-    body: "building products around what users do, not what they're expected to do, is where I thirve. funnel analytics, experimentation, session insights, and product metrics guide my decisions and  help uncover where experiences can be improved.",
+    body: [
+      <>
+        Building products around what users do, not what they’re expected to do, is where I thrive.
+        Most of the “<b>product decisions</b>” in my case studies are really just the result of
+        asking that question long enough.
+      </>,
+      "Funnel analytics, experimentation, session insights, and product metrics guide my decisions to know exactly what’s broken and for whom.",
+    ],
   },
   {
     label: "bridge",
-    body: "navigating teams and leadership to deliver results has been a constant across my roles. I have aligned Engineering, Design, Finance, Compliance, and Operations around shared goals; believing that influence comes from clarity, not authority.",
+    body: [
+      "Navigating teams and leadership to deliver results has been a constant across my roles. I have aligned Engineering, Design, Finance, Compliance, and Operations around shared goals.",
+    ],
   },
   {
     label: "principles",
-    body: "product principles become my compass from day one. whether it's outcome biased OKRs, compliance delivery, or customer obsession,  I absorb the mission and translate it into daily decisions because outcomes matter more than output to me.",
+    body: [
+      "Whether it’s outcome biased OKRs, compliance delivery, or customer obsession, I absorb the mission and translate it into daily decisions because outcomes matter more than output to me.",
+      "When a requirement doesn’t have a clean answer yet, I write down the actual question, take it back to the person who can answer it, and document the decision, rather than guessing and hoping it holds.",
+    ],
   },
 ];
 
+const notes = [
+  <>
+    having a technical background and having coded most of the time, I naturally think in{" "}
+    <b>systems</b> rather than isolated features. I approach problems <b>domain-first</b>, balancing
+    user needs, business objectives, and technical constraints.
+  </>,
+  <>
+    breaking <b>ambiguity</b> into smaller, manageable parts and working towards practical
+    solutions, help me bridge technical discussions with business needs.
+  </>,
+  <>
+    across consumer fintech products with <b>26M+</b> transactions and enterprise SaaS, I focus on
+    turning individual customer requirements into scalable, repeatable product capabilities.
+  </>,
+  <>
+    fluent in PM fundamentals and the product lifecycle, strategy and roadmaps, user research,
+    market and competitive analysis, growth and experimentation, along with{" "}
+    <b>AI, SaaS &amp; B2C platforms</b>.
+  </>,
+];
+
 export default function AboutSection() {
-  const { ref, isVisible } = useReveal<HTMLElement>(0.3);
-
   return (
-    <section ref={ref} className="deck-section">
-      <div className="deck-inner">
-        <div
-          className={`mb-8 text-left transition-all duration-700 md:mb-12 ${
-            isVisible ? "translate-y-0 opacity-100" : "-translate-y-12 opacity-0"
-          }`}
-        >
-          <h2 className="font-sans text-3xl font-light lowercase tracking-tight text-foreground sm:text-4xl md:text-6xl lg:text-7xl">
-            adding a little more context here
-            <br/>
-            because the details matter
-          </h2>
+    <Page title="about" home="#main" kicker="to begin:" lead="the name is kushagra.">
+      <div className="ab-s">
+        <div className="ab-s-left">
+          <p className="ab-s-who">
+            <b>business analyst</b> with a year and counting
+            <br />
+            across <em>fintech &amp; enterprise</em>, and a builder in his spare time.
+          </p>
+          {notes.map((n, i) => (
+            <p key={i}>{n}</p>
+          ))}
         </div>
-
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          <div
-            className={`transition-all duration-700 ${
-              isVisible ? "translate-x-0 opacity-100" : "-translate-x-16 opacity-0"
-            }`}
-          >
-            <h2 className="mb-6 font-sans text-xl font-light  text-foreground md:text-3xl">
-              to begin:<br/> the name is kushagra.
-            </h2>
-            <p className="mb-6 max-w-lg text-base leading-relaxed text-foreground/90 md:text-xl">
-              business analyst with a year and counting<br/> across fintech &amp; enterprise, and a builder
-              in his spare time.
-            </p>
-            <p className="mb-6 max-w-lg text-base leading-relaxed text-foreground/90 md:text-xl">
-              having a rich technical background and having coded most of the time, I naturally think in systems rather than isolated features.
-              </p>
-              <p className="mb-6 max-w-lg text-base leading-relaxed text-foreground/90 md:text-xl">
-               breaking ambiguity into smaller, manageable parts and working towards practical solutions, help me bridge technical discussions with business needs.
-            </p>
-          </div>
-
-          <div
-            className={`flex flex-col transition-all duration-700 delay-150 ${
-              isVisible ? "translate-x-0 opacity-100" : "translate-x-16 opacity-0"
-            }`}
-          >
-            {traits.map((trait, i) => (
-              <div
-                key={trait.label}
-                className={i === 0 ? "pb-6" : "border-t border-foreground/10 py-6 last:pb-0"}
-              >
-                <h3 className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-                  {trait.label}
-                </h3>
-                <p className="text-sm leading-relaxed text-foreground/80 md:text-base">{trait.body}</p>
-              </div>
-            ))}
-          </div>
+        <div className="ab-s-right">
+          {traits.map((t) => (
+            <div key={t.label}>
+              <h3>{t.label}</h3>
+              {t.body.map((p, j) => (
+                <p key={j}>{p}</p>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
-    </section>
+    </Page>
   );
 }

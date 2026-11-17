@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import SwipeDeck from "@/components/site/SwipeDeck";
 
 const title = "kusha";
-const description =
-  "kushagra portfolio";
+const description = "kushagra portfolio";
 
 export const Route = createFileRoute("/")({
   head: () => ({

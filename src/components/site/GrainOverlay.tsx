@@ -1,12 +1,12 @@
-export default function GrainOverlay() {
+export default function GrainOverlay({ hidden = false }: { hidden?: boolean }) {
+  // A pre-rendered tile, tiled with no blend mode: a live noise filter blended
+  // over moving content had to be recomposited on every frame.
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-50 opacity-[0.08]"
+      className={`pointer-events-none absolute inset-0 bg-[url('/assets/grain.png')] bg-[length:128px_128px] transition-opacity duration-500 ${
+        hidden ? "opacity-0" : "opacity-60"
+      }`}
       aria-hidden="true"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        mixBlendMode: "overlay",
-      }}
     />
   );
 }
