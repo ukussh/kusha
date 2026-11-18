@@ -610,3 +610,16 @@
 .kb div.pg-row b {
   font-weight: 700;
 }
+
+/* Phones and tablets: list pages end after their last row, with no stretched blank space. */
+@media (max-width: 900px) {
+  .kb.kp:has(.pg-list) {
+    min-height: 0;
+  }
+  .kb .pboard:has(.pg-list) {
+    min-height: 0;
+  }
+  .kb .pg-body > .pg-rows.pg-list {
+    flex: none;
+  }
+}
