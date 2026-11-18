@@ -132,15 +132,17 @@ function ListPage({
   kicker,
   lead,
   items,
+  pageSize = PAGE_SIZE,
 }: {
   title: string;
   kicker: string;
   lead: ReactNode;
   items: Item[];
+  pageSize?: number;
 }) {
   const [page, setPage] = useState(0);
-  const pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
-  const visible = items.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const pages = Math.max(1, Math.ceil(items.length / pageSize));
+  const visible = items.slice(page * pageSize, page * pageSize + pageSize);
   const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
@@ -203,6 +205,7 @@ export default function ProjectsSection() {
         </>
       }
       items={SIDE_PROJECTS}
+      pageSize={4}
     />
   );
 }
